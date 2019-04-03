@@ -19,44 +19,8 @@ class ViewController: UIViewController, UIScrollViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Skapa plats/storlek
-//        let rect = CGRect(x: 50, y: 50, width: 100, height: 100)
-//        
-//        // Skapa vy
-//        let square = UIView(frame: rect)
-//        
-//        // Konfigurera vy
-//        square.backgroundColor = UIColor.red
-//        
-//        let block = UIView(frame:rect)
-//        
-//        block.backgroundColor = UIColor.blue
-//        
-//        square.clipsToBounds = true
-//        square.addSubview(block)
-//        
-//        // Lägg till i din "container view"
-//        view.addSubview(square)
-//        
-//        // Skapa scrollView
-//        let scrollView = UIScrollView(frame: view.bounds)
-//        scrollView.autoresizingMask = [UIViewAutoresizing.flexibleWidth, UIViewAutoresizing.flexibleHeight]
-//        scrollView.backgroundColor = UIColor.green
-//        
-//        var offset:CGFloat = 0
-//        
-//        for i in 0...5 {
-//            let place = CGRect(x: 100, y: 50+i*200, width: Int(view.frame.size.width-200), height: 100)
-//            offset += 200
-//            let butt = UIView(frame: place)
-//            butt.backgroundColor = UIColor.white
-//            scrollView.addSubview(butt)
-//        }
-//        
-//        scrollView.contentSize = CGSize(width: view.bounds.size.width*1.5, height:offset)
-//        
-//        view.addSubview(scrollView)
-        
+        // Skapa scrollView
+//        createScrollView()
         
         // Lyssa på notiser från tangentbordet!
         
@@ -69,6 +33,37 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         // Sätt min och max zoom
         myScrollView.minimumZoomScale = 0.5
         myScrollView.maximumZoomScale = 2.0
+        
+        // Skapa "gräs"
+        createGrass(count: 20, size: 20)
+    }
+    
+    func createScrollView() {
+        
+        // Skapa vy med samma storlek som huvudvy
+        let scrollView = UIScrollView(frame: view.bounds)
+        scrollView.backgroundColor = UIColor.green
+        
+        // Om vi inte använder auto layout constraints, så måste vi ställa in "gammal typ av skalning"
+        scrollView.autoresizingMask = [UIViewAutoresizing.flexibleWidth, UIViewAutoresizing.flexibleHeight]
+        
+        // Variabel att öka avstånd Y-led
+        var offset:CGFloat = 0
+        
+        // Skapa 5 vyer och placera jämnt fördelat i scrollView
+        for i in 0...5 {
+            let place = CGRect(x: 100, y: 50+i*200, width: Int(view.frame.size.width-200), height: 100)
+            offset += 200
+            let butt = UIView(frame: place)
+            butt.backgroundColor = UIColor.white
+            scrollView.addSubview(butt)
+        }
+        
+        // Ställ in storleken för din "Content View"
+        scrollView.contentSize = CGSize(width: view.bounds.size.width*1.5, height:offset)
+        
+        // Lägg till den i din "container view"
+        view.addSubview(scrollView)
     }
     
     @objc func didTap(_ gesture: UIGestureRecognizer) {
@@ -103,6 +98,21 @@ class ViewController: UIViewController, UIScrollViewDelegate {
     
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return contentView
+    }
+    
+    // MARK: Populate "grass" views
+    
+    func createGrass(count: Int, size: CGFloat) {
+        let step = view.frame.size.width / CGFloat(count)
+        var offset:CGFloat = 0
+        for _ in 0...count {
+            let rect = CGRect(x: offset, y: contentView.frame.size.height-size/2, width: size, height: size)
+            let grassView = UIView(frame: rect)
+            grassView.layer.transform = CATransform3DMakeRotation(.pi/4, 0, 0, 1)
+            grassView.backgroundColor = UIColor.green
+            contentView.addSubview(grassView)
+            offset += step
+        }
     }
 }
 
