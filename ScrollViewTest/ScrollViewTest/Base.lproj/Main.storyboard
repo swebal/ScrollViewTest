@@ -94,6 +94,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="contentView" destination="QTO-w3-KSh" id="TcA-tm-cPx"/>
                         <outlet property="myScrollView" destination="pW3-4x-h7O" id="qYz-es-SmR"/>
                         <outlet property="pageControl" destination="WcW-BU-pmy" id="qKv-3D-HBv"/>
                     </connections>

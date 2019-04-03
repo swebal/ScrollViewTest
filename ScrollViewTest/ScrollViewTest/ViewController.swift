@@ -12,6 +12,7 @@ class ViewController: UIViewController, UIScrollViewDelegate {
     
     @IBOutlet weak var myScrollView: UIScrollView!
     @IBOutlet weak var pageControl: UIPageControl!
+    @IBOutlet weak var contentView: UIView!
     
     var keyboardVisible = false
     
@@ -64,6 +65,10 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         
         // Lägg till tap gesture för att stänga
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTap(_:))))
+        
+        // Sätt min och max zoom
+        myScrollView.minimumZoomScale = 0.5
+        myScrollView.maximumZoomScale = 2.0
     }
     
     @objc func didTap(_ gesture: UIGestureRecognizer) {
@@ -87,11 +92,17 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         myScrollView.contentInset = UIEdgeInsets.zero
         myScrollView.contentOffset = CGPoint.zero
     }
-
+    
+    // MARK: UIScrollViewDelegate
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         // scrollView.contentOffset.x går från 0 till 750 (+375 för varje sida)
         let pageNumber = Int(round(scrollView.contentOffset.x/view.frame.size.width))
         pageControl.currentPage = pageNumber
+    }
+    
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return contentView
     }
 }
 
