@@ -28,7 +28,12 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: .UIKeyboardWillHide, object: nil)
         
         // Lägg till tap gesture för att stänga
-        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTap(_:))))
+        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(didDoubleTap(_:)))
+        doubleTap.numberOfTapsRequired = 2
+        view.addGestureRecognizer(doubleTap)
+        let tap = UITapGestureRecognizer(target: self, action: #selector(didTap(_:)))
+        tap.require(toFail: doubleTap)
+        view.addGestureRecognizer(tap)
         
         // Sätt min och max zoom
         myScrollView.minimumZoomScale = 0.5
@@ -67,7 +72,12 @@ class ViewController: UIViewController, UIScrollViewDelegate {
     }
     
     @objc func didTap(_ gesture: UIGestureRecognizer) {
-        view.endEditing(true)
+        view.endEditing(false)
+    }
+    
+    @objc func didDoubleTap(_ gesture: UIGestureRecognizer) {
+        // Skapa "boll"
+        createBall()
     }
     
     @objc func keyboardWillShow(_ notification: Notification) {
@@ -112,6 +122,22 @@ class ViewController: UIViewController, UIScrollViewDelegate {
             grassView.backgroundColor = UIColor.green
             contentView.addSubview(grassView)
             offset += step
+        }
+    }
+    
+    // MARK: Create "ball"
+    
+    func createBall() {
+        let randomX = CGFloat(arc4random_uniform(UInt32(view.frame.size.width-50)))
+        let ballView = UIView(frame: CGRect(x: randomX, y: -50, width: 50, height: 50))
+        ballView.backgroundColor = UIColor.blue
+        ballView.layer.cornerRadius = 25
+        ballView.clipsToBounds = true
+        contentView.insertSubview(ballView, at: 0)
+        UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: .curveEaseIn, animations: {
+            ballView.frame = CGRect(x: randomX, y: self.view.frame.size.height-50, width: 50, height: 50)
+        }) { (done) in
+            print("Animation complete!")
         }
     }
 }
