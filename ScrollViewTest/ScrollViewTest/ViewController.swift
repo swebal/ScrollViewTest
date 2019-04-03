@@ -60,30 +60,32 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         // Lyssa på notiser från tangentbordet!
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: .UIKeyboardWillShow, object: nil)
-        
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: .UIKeyboardWillHide, object: nil)
+        
+        // Lägg till tap gesture för att stänga
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTap(_:))))
     }
     
     @objc func didTap(_ gesture: UIGestureRecognizer) {
-        
+        view.endEditing(true)
     }
     
     @objc func keyboardWillShow(_ notification: Notification) {
         print("Tangentbordet kommer att visa sig!")
-        if !keyboardVisible {
-            myScrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 216, right: 0)
-            myScrollView.contentOffset = CGPoint(x: 0, y: 216)
+        var keyboardHeight:CGFloat = 216.0 // Sätt en default höjd för tangentbordet
+        // Försök att ta reda på höjden på tangentbordet (skiljer sig för större telefoner och iPad)
+        if let keyboardFrame: NSValue = notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue { // Inte lätt att komma ihåg... ;)
+            let keyboardRectangle = keyboardFrame.cgRectValue
+            keyboardHeight = keyboardRectangle.height
         }
-        keyboardVisible = true
+        myScrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardHeight, right: 0)
+        myScrollView.contentOffset = CGPoint(x: 0, y: keyboardHeight)
     }
     
     @objc func keyboardWillHide(_ notification: Notification) {
         print("Tangentbordet kommer att gömma sig!")
-        if keyboardVisible {
-            myScrollView.contentInset = UIEdgeInsets.zero
-            myScrollView.contentOffset = CGPoint.zero
-        }
-        keyboardVisible = false
+        myScrollView.contentInset = UIEdgeInsets.zero
+        myScrollView.contentOffset = CGPoint.zero
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
