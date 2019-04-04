@@ -65,7 +65,7 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         }
         
         // Ställ in storleken för din "Content View"
-        scrollView.contentSize = CGSize(width: view.bounds.size.width*1.5, height:offset)
+        scrollView.contentSize = CGSize(width: view.bounds.size.width, height:offset)
         
         // Lägg till den i din "container view"
         view.addSubview(scrollView)
@@ -113,7 +113,7 @@ class ViewController: UIViewController, UIScrollViewDelegate {
     // MARK: Populate "grass" views
     
     func createGrass(count: Int, size: CGFloat) {
-        let step = view.frame.size.width / CGFloat(count)
+        let step = contentView.frame.size.width / CGFloat(count)
         var offset:CGFloat = 0
         for _ in 0...count {
             let rect = CGRect(x: offset, y: contentView.frame.size.height-size/2, width: size, height: size)
